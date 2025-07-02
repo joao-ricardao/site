@@ -1,0 +1,366 @@
+<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Jogo: Lesão nos Negócios Jurídicos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary-blue: #0A2240; /* Darker, sophisticated blue */
+      --light-blue: #1A4D80; /* Lighter shade for accents */
+      --accent-yellow: #FFC300; /* Vibrant accent color */
+      --text-dark: #333;
+      --text-light: #f4f4f4;
+      --card-background: white;
+      --button-hover-blue: #081B30;
+      --correct-green: #28A745;
+      --incorrect-red: #DC3545;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      /* Background will now span full width */
+      background: linear-gradient(135deg, var(--primary-blue), var(--light-blue));
+      margin: 0;
+      padding: 0;
+      /* Removed flexbox centering for full width content */
+      min-height: 100vh;
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    .page {
+      display: none;
+      padding: 20px; /* Reduced padding to give more space for content */
+      max-width: 100%; /* Allow page to take full width */
+      width: 100%; /* Ensure it takes 100% of body width */
+      margin: 0; /* Remove auto margin to remove side spacing */
+      box-sizing: border-box; /* Include padding in element's total width and height */
+      text-align: center;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .card {
+      background: var(--card-background);
+      padding: 30px; /* Slightly reduced padding */
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+      animation: fadeIn 1s ease-in-out;
+      border: 1px solid rgba(0,0,0,0.1); /* Subtle border */
+      max-width: 900px; /* Maintain a readable max-width for content inside card */
+      margin: 20px auto; /* Center the card horizontally */
+      box-sizing: border-box;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2, h3, h4 {
+      color: var(--primary-blue);
+      margin-bottom: 15px;
+      font-weight: 600;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 2.8em;
+      color: var(--accent-yellow); /* Make main title pop */
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    h2 {
+        font-size: 1.8em;
+    }
+    h3 {
+        font-size: 1.4em;
+        color: var(--light-blue);
+    }
+    h4 {
+        font-size: 1.2em;
+        color: var(--light-blue);
+    }
+
+    /* Specific style for question text to allow smaller font and full visibility */
+    #question-title {
+      font-size: 1.1em; /* Smaller default font size for questions */
+      white-space: pre-wrap; /* Preserve whitespace and allow wrapping for newlines */
+      word-wrap: break-word; /* Ensure long words break */
+      margin-bottom: 30px;
+      text-align: left; /* Align question text to left for better readability */
+      padding: 0 10px; /* Add some padding to the sides of the question text */
+    }
+
+    p {
+      font-size: 1.15em;
+      margin-bottom: 1em;
+      color: var(--text-dark);
+    }
+    strong {
+        color: var(--primary-blue);
+    }
+
+    .button {
+      margin: 10px auto; /* Adjust margin for spacing between buttons */
+      padding: 15px 35px;
+      font-size: 1.1em;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      background-color: var(--primary-blue);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-transform: uppercase;
+      font-weight: bold;
+      letter-spacing: 1px;
+      display: block; /* Make buttons stack vertically */
+      width: 90%; /* Adjust width for options */
+      max-width: 500px; /* Max width for consistency */
+    }
+    .button:hover {
+      background-color: var(--button-hover-blue);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(0,0,0,0.3);
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 0.9em;
+      color: #777;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      padding-top: 20px;
+    }
+    footer p {
+        font-size: 1em;
+        line-height: 1.4;
+        margin-bottom: 5px;
+    }
+
+    .feedback {
+      font-weight: bold;
+      margin-top: 25px;
+      font-size: 1.3em;
+      padding: 15px;
+      border-radius: 10px;
+      background-color: rgba(40, 167, 69, 0.1); /* Light green background */
+      color: var(--correct-green);
+      transition: all 0.3s ease;
+    }
+    .feedback.incorrect {
+        background-color: rgba(220, 53, 69, 0.1); /* Light red background */
+        color: var(--incorrect-red);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #options {
+        margin-top: 30px;
+    }
+    #options button {
+        /* Already display: block and margin: auto in .button */
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .card {
+        padding: 25px;
+        margin: 15px auto;
+      }
+      h1 {
+        font-size: 2em;
+      }
+      h2 {
+        font-size: 1.5em;
+      }
+      #question-title {
+        font-size: 1em; /* Smaller on medium screens */
+        padding: 0 5px;
+      }
+      p {
+        font-size: 1em;
+      }
+      .button {
+        padding: 12px 25px;
+        font-size: 1em;
+        width: 95%;
+      }
+      .feedback {
+        font-size: 1.1em;
+      }
+    }
+    @media (max-width: 480px) {
+      .card {
+        padding: 20px 15px;
+        margin: 10px auto;
+      }
+      h1 {
+        font-size: 1.6em;
+        letter-spacing: 1px;
+      }
+      h2 {
+        font-size: 1.3em;
+      }
+      #question-title {
+        font-size: 0.95em; /* Even smaller on small screens */
+        padding: 0;
+      }
+      p {
+        font-size: 0.95em;
+      }
+      .button {
+        width: 100%;
+        font-size: 0.95em;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="intro" class="page active">
+  <div class="card">
+    <h2>UNIVERSIDADE FEDERAL DO RIO GRANDE DO NORTE</h2>
+    <h3>Curso de Direito – CCSA – 2º Período – 2024.2</h3>
+    <h4>Professor: Costa Neto</h4>
+    <h1>🔎 Jogo Interativo: Lesão nos Negócios Jurídicos ⚖️</h1>
+    <p>Você já imaginou alguém vendendo um carro de luxo por preço de bicicleta só porque estava desesperado por dinheiro?</p>
+    <p>Ou comprando algo muito caro sem saber o valor real, por pura inexperiência?</p>
+    <p>Se sim, você acaba de conhecer o mundo dos <strong>negócios jurídicos viciados por lesão</strong>! 👀</p>
+    <p>Neste jogo, você será desafiado a julgar casos concretos, identificar se há lesão e aplicar o que a lei determina!</p>
+    <p><em>Prepare-se para pensar como um jurista... e se divertir no processo!</em> 🧠💼</p>
+    <button class="button" onclick="startGame()">Começar o Jogo</button>
+    <footer>
+      <p><strong>Integrantes do Grupo:</strong></p>
+      <p>ALEXIA MARIA ARAÚJO DE SOUZA<br>
+      ANA JÚLIA GOMES CIDADE<br>
+      DANIEL PEREIRA DE MENEZES<br>
+      JOÃO RICARDO FREIRE DE MELO<br>
+      JOÃO AUGUSTO VENÂNCIO DA SILVA<br>
+      MATHEUS QUEIROZ XAVIER DE MOURA<br>
+      PEDRO LUCAS GOMES PEREIRA<br>
+      SAMUEL HENRIQUE DE MELO<br>
+      SAMUEL DA SILVA QUEIROZ</p>
+    </footer>
+  </div>
+</div>
+
+<div id="quiz" class="page">
+  <div class="card">
+    <h2 id="question-title">Carregando...</h2>
+    <div id="options"></div>
+    <p class="feedback" id="feedback"></p>
+    <button id="next-button" class="button hidden">Próximo Caso</button>
+  </div>
+</div>
+
+<script>
+  const introPage = document.getElementById('intro');
+  const quizPage = document.getElementById('quiz');
+
+  function startGame() {
+    introPage.classList.remove('active');
+    quizPage.classList.add('active');
+    loadCase(current);
+  }
+
+  const cases = [
+    {
+      question: "Caso 1:\nJoão, em situação de extrema pobreza, vende sua única casa por um preço muito inferior ao valor de mercado. O comprador sabia da situação de João.\n\nO negócio é anulável por lesão?",
+      options: [
+        "A) Sim, pois houve aproveitamento da necessidade de João.",
+        "B) Não, pois João assinou livremente.",
+        "C) Não, pois não há proibição de vender abaixo do valor de mercado."
+      ],
+      correct: 0,
+      explanation: "O art. 157 do CC permite anulação por lesão quando uma parte se aproveita da necessidade ou inexperiência da outra."
+    },
+    {
+      question: "Caso 2:\nMaria, uma idosa sem experiência com finanças, vende um terreno rural por metade do valor real. O comprador é um corretor que percebeu a inexperiência dela.\n\nÉ caso de lesão?",
+      options: [
+        "A) Não, pois não há prova de má-fé.",
+        "B) Sim, pois houve desproporção e inexperiência.",
+        "C) Não, pois o terreno era dela e ela podia negociar livremente."
+      ],
+      correct: 1,
+      explanation: "A lesão pode ocorrer por inexperiência, mesmo sem prova de má-fé explícita, desde que haja desproporção entre as prestações."
+    },
+    {
+      question: "Caso 3:\nCarlos vende seu carro por um valor justo. Após a venda, descobre que o comprador o revendeu por quase o dobro do valor. Carlos alega ter sido lesado.\n\nHá lesão?",
+      options: [
+        "A) Sim, pois o comprador lucrou demais.",
+        "B) Não, pois não houve desproporção no momento da venda.",
+        "C) Sim, pois o Código Civil protege contra lucro exagerado."
+      ],
+      correct: 1,
+      explanation: "A lesão é avaliada no momento do contrato. Se o valor estava justo, o lucro posterior do comprador não anula o negócio."
+    },
+    {
+        question: "CASO BÔNUS:\nCarla, 22 anos, recém-formada e sem experiência em negócios, herda um terreno em área valorizada. Sem conhecer o real valor (R$ 800.000,00) e precisando pagar dívidas, decide vendê-lo.\n\nO empresário Eduardo, corretor experiente, sabendo do valor real e de um projeto de valorização, oferece apenas R$ 180.000,00, alegando que a área está 'desvalorizada por obras'. Carla aceita sem consultar outros especialistas.\n\nUm mês depois, descobre que terrenos vizinhos foram vendidos por mais de R$ 900.000,00 e que Eduardo conhecia o projeto público.\n\nÉ caso de Lesão?",
+        options: [
+            "A) Sim, pois houve inexperiência de Carla e aproveitamento de Eduardo, com desproporção evidente.",
+            "B) Não, pois Carla assinou o contrato livremente, sem coação.",
+            "C) Não, pois o valor de venda foi acordado entre as partes, configurando um risco do negócio."
+        ],
+        correct: 0,
+        explanation: "A inexperiência de Carla e o aproveitamento consciente de Eduardo sobre sua vulnerabilidade, resultando em uma desproporção gritante entre o valor pago e o valor real do terreno, são elementos claros de lesão (Art. 157 do Código Civil)."
+    }
+  ];
+
+  let current = 0;
+
+  const title = document.getElementById("question-title");
+  const optionsDiv = document.getElementById("options");
+  const feedback = document.getElementById("feedback");
+  const nextButton = document.getElementById("next-button");
+
+  function loadCase(index) {
+    const currentCase = cases[index];
+    title.textContent = currentCase.question;
+    feedback.textContent = "";
+    feedback.classList.remove('incorrect'); // Reset feedback color
+    optionsDiv.innerHTML = "";
+    nextButton.classList.add("hidden"); // Hide next button for new question
+
+    currentCase.options.forEach((opt, i) => {
+      const btn = document.createElement("button");
+      btn.textContent = opt;
+      btn.className = "button";
+      btn.onclick = () => checkAnswer(i);
+      optionsDiv.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(selected) {
+    const correct = cases[current].correct;
+    if (selected === correct) {
+      feedback.textContent = "✅ " + cases[current].explanation;
+      feedback.classList.remove('incorrect');
+    } else {
+      feedback.textContent = "❌ Resposta incorreta. " + cases[current].explanation;
+      feedback.classList.add('incorrect');
+    }
+    nextButton.classList.remove("hidden");
+  }
+
+  nextButton.onclick = () => {
+    current++;
+    if (current < cases.length) {
+      loadCase(current);
+    } else {
+      title.textContent = "Fim do Jogo!";
+      optionsDiv.innerHTML = "";
+      feedback.textContent = "Parabéns por participar! Esperamos que agora você entenda melhor o conceito de lesão nos negócios jurídicos.";
+      nextButton.classList.add("hidden"); // Ensure the button is hidden at the end
+    }
+  };
+</script>
+
+</body>
+</html>
