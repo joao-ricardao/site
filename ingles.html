@@ -14,317 +14,202 @@
         #question, #result, #score, #gameOver {
             margin-bottom: 20px;
         }
-
         input[type="text"] {
-
             width: 100%;
-
             padding: 5px;
-
         }
-
         button {
-
             padding: 5px 10px;
-
             background-color: #007bff;
-
             color: white;
-
             border: none;
-
             cursor: pointer;
-
         }
-
     </style>
-
 </head>
-
 <body>
 
     <h1>Termos em Inglês</h1>
-
-    <p>Digite o termo referente a definição apresentada:</p>
-
+    <p>Digite o termo referente à definição apresentada:</p>
     <div id="question"></div>
-
     <input type="text" id="answer" placeholder="Digite sua resposta aqui">
-
     <button onclick="checkAnswer()">Verificar</button>
-
     <div id="result"></div>
-
-    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/10</div>
-
+    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/15</div>
     <div id="gameOver" style="display: none;"></div>
 
     <script>
+        const TOTAL_QUESTOES = 15;
 
-     
-
-     const terms = {
-    
- "neuromodulação": "neuromodulation",  
-"abordagem": "approach",  
-"neuroengenharia": "neuroengineering",  
-"reabilitação": "rehabilitation",  
-"sensor vestível": "wearable sensor",  
-"química analítica": "analytical chemistry",  
-"código-fonte": "source code",  
-"fluxograma": "flowchart",  
-"gráfico de caixa": "box plot",  
-"gráfico de pizza": "pie chart",
-"precisão": "accuracy",
-"revisão abrangente": "comprehensive review",
-"acionado por tendão": "tendon-driven",
-"acionado por cabo": "cable-driven",
-"ambiente": "environment",
-"objeto inteligente": "smart object",
-"atuador de sensor": "sensor actuator",
-"fornece": "provide",
-"endereço": "address",
-"sistema ciberfísico": "cyber-physical system",
-"melhorar": "improve",
-"sistema embarcado": "embedded system",
-"tipo de rede neural: MLPs": "multi-layer perceptrons",
-"tipo de rede neural: CNNs": "convolutional neural networks",
-"tipo de rede neural: RNNs": "recurrent neural networks",
-"áreas e sub-áreas da inteligência artificial": "ai,ml,nn,dl", 
-"único neurônio com apenas uma camada de entrada e nenhuma camada oculta" : "perceptron",
-"inteligência artificial": "artificial intelligence",
-"rede neural": "neural network",
-"aprendizado de máquina": "machine learning",
-"aprendizado profundo": "deep learning",
-"modelo preditivo": "predictive model",
-"visão computacional": "computer vision",
-"processamento de linguagem natural": "natural language processing",
-"algoritmo genético": "genetic algorithm",
-"conjunto de dados": "dataset",
-"treinamento": "training",
-"validação cruzada": "cross-validation",
-"precisão": "accuracy",
-"taxa de erro": "error rate",
-"classificação": "classification",
-"regressão": "regression",
-"supervisionado": "supervised",
-"não supervisionado": "unsupervised",
-"reforço": "reinforcement",
-"hiperparâmetros": "hyperparameters",
-"função de custo": "cost function",
-"camada oculta": "hidden layer",
-"ativação": "activation",
-"função de ativação": "activation function",
-"rede neural convolucional": "convolutional neural network",
-"rede neural recorrente": "recurrent neural network",
-"generalização": "generalization",
-"representação vetorial": "vector representation",
-"tokenização": "tokenization",
-"transformador": "transformer",
-"atendimento automatizado": "automated customer service",
-"modelo de linguagem": "language model",
-"geração de texto": "text generation",
-"classificador binário": "binary classifier",
-"mineração de dados": "data mining",
-"inteligência computacional": "computational intelligence",
-"algoritmo de decisão": "decision algorithm",
-"rede neural": "neural network",
-"rede neural artificial": "artificial neural network",
-"camada": "layer",
-"camada de entrada": "input layer",
-"camada oculta": "hidden layer",
-"camada de saída": "output layer",
-"neurônio artificial": "artificial neuron",
-"pesos": "weights",
-"viés": "bias",
-"função de ativação": "activation function",
-"função sigmoide": "sigmoid function",
-"função ReLU": "ReLU function",
-"função softmax": "softmax function",
-"backpropagação": "backpropagation",
-"propagação direta": "forward propagation",
-"gradiente descendente": "gradient descent",
-"taxa de aprendizado": "learning rate",
-"época": "epoch",
-"batch": "batch",
-"tamanho do batch": "batch size",
-"perda": "loss",
-"função de perda": "loss function",
-"rede convolucional": "convolutional neural network",
-"rede recorrente": "recurrent neural network",
-"rede densa": "dense network",
-"normalização em batch": "batch normalization",
-"explosão de gradiente": "gradient explosion",
-"desvanecimento do gradiente": "gradient vanishing",
-"parâmetros treináveis": "trainable parameters",
-"memória de longo prazo": "long-term memory",
-"memória de curto prazo": "short-term memory",
-"rede profunda": "deep network",
-"modelo raso": "shallow model",
-"treinamento supervisionado": "supervised training",
-"otimizador": "optimizer",
-"função objetivo": "objective function"
-         
-};
-
+        const terms = {
+            "neuromodulação": "neuromodulation",  
+            "abordagem": "approach",  
+            "neuroengenharia": "neuroengineering",  
+            "reabilitação": "rehabilitation",  
+            "sensor vestível": "wearable sensor",  
+            "química analítica": "analytical chemistry",  
+            "código-fonte": "source code",  
+            "fluxograma": "flowchart",  
+            "gráfico de caixa": "box plot",  
+            "gráfico de pizza": "pie chart",
+            "precisão": "accuracy",
+            "revisão abrangente": "comprehensive review",
+            "acionado por tendão": "tendon-driven",
+            "acionado por cabo": "cable-driven",
+            "ambiente": "environment",
+            "objeto inteligente": "smart object",
+            "atuador de sensor": "sensor actuator",
+            "fornece": "provide",
+            "endereço": "address",
+            "sistema ciberfísico": "cyber-physical system",
+            "melhorar": "improve",
+            "sistema embarcado": "embedded system",
+            "tipo de rede neural: MLPs": "multi-layer perceptrons",
+            "tipo de rede neural: CNNs": "convolutional neural networks",
+            "tipo de rede neural: RNNs": "recurrent neural networks",
+            "áreas e sub-áreas da inteligência artificial": "ai,ml,nn,dl", 
+            "único neurônio com apenas uma camada de entrada e nenhuma camada oculta" : "perceptron",
+            "inteligência artificial": "artificial intelligence",
+            "rede neural": "neural network",
+            "aprendizado de máquina": "machine learning",
+            "aprendizado profundo": "deep learning",
+            "modelo preditivo": "predictive model",
+            "visão computacional": "computer vision",
+            "processamento de linguagem natural": "natural language processing",
+            "algoritmo genético": "genetic algorithm",
+            "conjunto de dados": "dataset",
+            "treinamento": "training",
+            "validação cruzada": "cross-validation",
+            "taxa de erro": "error rate",
+            "classificação": "classification",
+            "regressão": "regression",
+            "supervisionado": "supervised",
+            "não supervisionado": "unsupervised",
+            "reforço": "reinforcement",
+            "hiperparâmetros": "hyperparameters",
+            "função de custo": "cost function",
+            "camada oculta": "hidden layer",
+            "ativação": "activation",
+            "função de ativação": "activation function",
+            "rede neural convolucional": "convolutional neural network",
+            "rede neural recorrente": "recurrent neural network",
+            "generalização": "generalization",
+            "representação vetorial": "vector representation",
+            "tokenização": "tokenization",
+            "transformador": "transformer",
+            "atendimento automatizado": "automated customer service",
+            "modelo de linguagem": "language model",
+            "geração de texto": "text generation",
+            "classificador binário": "binary classifier",
+            "mineração de dados": "data mining",
+            "inteligência computacional": "computational intelligence",
+            "algoritmo de decisão": "decision algorithm",
+            "rede neural artificial": "artificial neural network",
+            "camada": "layer",
+            "camada de entrada": "input layer",
+            "camada de saída": "output layer",
+            "neurônio artificial": "artificial neuron",
+            "pesos": "weights",
+            "viés": "bias",
+            "função sigmoide": "sigmoid function",
+            "função ReLU": "ReLU function",
+            "função softmax": "softmax function",
+            "backpropagação": "backpropagation",
+            "propagação direta": "forward propagation",
+            "gradiente descendente": "gradient descent",
+            "taxa de aprendizado": "learning rate",
+            "época": "epoch",
+            "tamanho do batch": "batch size",
+            "perda": "loss",
+            "função de perda": "loss function",
+            "rede densa": "dense network",
+            "normalização em batch": "batch normalization",
+            "explosão de gradiente": "gradient explosion",
+            "desvanecimento do gradiente": "gradient vanishing",
+            "parâmetros treináveis": "trainable parameters",
+            "memória de longo prazo": "long-term memory",
+            "memória de curto prazo": "short-term memory",
+            "rede profunda": "deep network",
+            "modelo raso": "shallow model",
+            "treinamento supervisionado": "supervised training",
+            "otimizador": "optimizer",
+            "função objetivo": "objective function"
+        };
 
         let currentTerm;
-
         let correctAnswers = 0;
-
         let wrongAnswers = 0;
-
         let questionCount = 0;
-
         let usedTerms = [];
 
-
-
-
         function newQuestion() {
-
-            if (questionCount >= 10) {
-
+            if (questionCount >= TOTAL_QUESTOES) {
                 endGame();
-
                 return;
-
             }
-
-
-
 
             const portugueseTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
-
             currentTerm = portugueseTerms[Math.floor(Math.random() * portugueseTerms.length)];
-
             usedTerms.push(currentTerm);
 
-            
-
             document.getElementById('question').textContent = currentTerm;
-
             document.getElementById('answer').value = '';
-
             document.getElementById('result').textContent = '';
-
             questionCount++;
-
             updateScore();
-
         }
-
-
-
 
         function checkAnswer() {
-
             const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
-
             const correctAnswer = terms[currentTerm].toLowerCase();
 
-
-
-
             if (userAnswer === correctAnswer) {
-
                 document.getElementById('result').textContent = 'Correto! Parabéns!';
-
                 document.getElementById('result').style.color = 'green';
-
                 correctAnswers++;
-
             } else {
-
                 document.getElementById('result').textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
-
                 document.getElementById('result').style.color = 'red';
-
                 wrongAnswers++;
-
             }
 
-
-
-
             updateScore();
-
             setTimeout(newQuestion, 2000);
-
         }
-
-
-
 
         function updateScore() {
-
-            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/10`;
-
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/${TOTAL_QUESTOES}`;
         }
-
-
-
 
         function endGame() {
-
             document.getElementById('question').style.display = 'none';
-
             document.getElementById('answer').style.display = 'none';
-
             document.querySelector('button').style.display = 'none';
-
             document.getElementById('result').style.display = 'none';
-
             document.getElementById('gameOver').style.display = 'block';
-
             document.getElementById('gameOver').innerHTML = `
-
                 <h2>Fim do Jogo!</h2>
-
                 <p>Acertos: ${correctAnswers}</p>
-
                 <p>Erros: ${wrongAnswers}</p>
-
                 <button onclick="restartGame()">Jogar Novamente</button>
-
             `;
-
         }
-
-
-
 
         function restartGame() {
-
             correctAnswers = 0;
-
             wrongAnswers = 0;
-
             questionCount = 0;
-
             usedTerms = [];
-
             document.getElementById('question').style.display = 'block';
-
             document.getElementById('answer').style.display = 'block';
-
             document.querySelector('button').style.display = 'inline-block';
-
             document.getElementById('result').style.display = 'block';
-
             document.getElementById('gameOver').style.display = 'none';
-
             newQuestion();
-
         }
 
-
-
-
         newQuestion();
-
     </script>
 
 </body>
-
 </html>
