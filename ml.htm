@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Tradução</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        #question, #result, #score, #gameOver {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Termos em Inglês</h1>
+    <p>Digite o termo referente à definição apresentada:</p>
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Digite sua resposta aqui">
+    <button onclick="checkAnswer()">Verificar</button>
+    <div id="result"></div>
+    <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/15</div>
+    <div id="gameOver" style="display: none;"></div>
+
+    <script>
+        const TOTAL_QUESTOES = 15;
+
+        const terms = {
+"Imprima a versão do Numpy": "print(np.__version__)",
+"Imprima a versão do Pandas": "print(pd.__version__)",
+"Imprima a versão do SciPy": "print(sp.__version__)",
+"Imprima a versão do scikit-learn": "print(sklearn.__version__)",
+"Importe a biblioteca, o módulo e a função usadas para carregar o conjunto de dados de vinhos (built-in dataset)": "from sklearn.datasets import load_wine",
+"Você já importou o dataset wine, agora armazene em uma variável (dicionário) chamada WINE a função correspondente": "wine=load_wine()",
+"Acesse os dados de entrada (features) do dataset de vinhos que estão na variável WINE": "wine.data",
+"Acesse os nomes das colunas do dataset de vinhos que estão na variável WINE": "wine.feature_names",
+"Crie um DataFrame do pandas (df) com os dados do dataset de vinhos (wine)": "df=pd.DataFrame(data=wine.data, columns=wine.feature_names)",      
+"Importe a biblioteca, o módulo e a função usadas para carregar o conjunto de dados de iris (built-in dataset)": "from sklearn.datasets import load_iris",
+"Você já importou o dataset iris, agora armazene em uma variável (dicionário) chamada IRIS a função correspondente": "iris=load_iris()",
+"Acesse os dados de entrada (features) do dataset de iris que estão na variável IRIS": "iris.data",
+"Acesse os nomes das colunas do dataset de vinhos que estão na variável IRIS": "iris.feature_names",
+"Crie um DataFrame do pandas (df) com os dados do dataset de iris (iris)": "df=pd.DataFrame(data=iris.data, columns=iris.feature_names)",
+"Importe a biblioteca do Pandas com o apelido (alias) tradicional": "import pandas as pd",
+        };
+
+        let currentTerm;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questionCount = 0;
+        let usedTerms = [];
+
+        function newQuestion() {
+            if (questionCount >= TOTAL_QUESTOES) {
+                endGame();
+                return;
+            }
+
+            const portugueseTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
+            currentTerm = portugueseTerms[Math.floor(Math.random() * portugueseTerms.length)];
+            usedTerms.push(currentTerm);
+
+            document.getElementById('question').textContent = currentTerm;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            questionCount++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = terms[currentTerm].toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = 'Correto! Parabéns!';
+                document.getElementById('result').style.color = 'green';
+                correctAnswers++;
+            } else {
+                document.getElementById('result').textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
+                document.getElementById('result').style.color = 'red';
+                wrongAnswers++;
+            }
+
+            updateScore();
+            setTimeout(newQuestion, 2000);
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/${TOTAL_QUESTOES}`;
+        }
+
+        function endGame() {
+            document.getElementById('question').style.display = 'none';
+            document.getElementById('answer').style.display = 'none';
+            document.querySelector('button').style.display = 'none';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('gameOver').innerHTML = `
+                <h2>Fim do Jogo!</h2>
+                <p>Acertos: ${correctAnswers}</p>
+                <p>Erros: ${wrongAnswers}</p>
+                <button onclick="restartGame()">Jogar Novamente</button>
+            `;
+        }
+
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionCount = 0;
+            usedTerms = [];
+            document.getElementById('question').style.display = 'block';
+            document.getElementById('answer').style.display = 'block';
+            document.querySelector('button').style.display = 'inline-block';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+            newQuestion();
+        }
+
+        newQuestion();
+    </script>
+
+</body>
+</html>
