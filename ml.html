@@ -57,7 +57,12 @@
 "Acesse os nomes das colunas do dataset de vinhos que estão na variável IRIS": "iris.feature_names",
 "Crie um DataFrame do pandas (df) com os dados do dataset de iris (iris)": "df=pd.DataFrame(data=iris.data,columns=iris.feature_names)",
 "Importe a biblioteca do Pandas com o apelido (alias) tradicional": "import pandas as pd",
-        };
+"Importe a biblioteca, o módulo e a função usadas para dividir dados do dataset em partes": "from sklearn.model_selection import train_test_split",
+"Divide as features e os rótulos do dataset IRIS em conjuntos de treino e teste, com separação aleatória reproduzível": "X_train,X_test,y_train,y_test=train_test_split(iris['data'],iris['target'],random_state=0)
+
+
+
+};
 
         let currentTerm;
         let correctAnswers = 0;
