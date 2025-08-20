@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Verificador de Concurso de Agentes</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --accent: #22c55e;
+      --danger: #ef4444;
+      --btn: #1f2937;
+      --btn-hover: #374151;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh; display: grid; place-items: center; padding: 24px;
+    }
+    .card {
+      width: 100%; max-width: 780px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid var(--border); border-radius: 20px; padding: 28px; box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+    h1 { margin: 0 0 8px; font-size: 1.5rem; }
+    p { margin: 4px 0 16px; color: var(--muted); }
+    .question {
+      margin: 18px 0 12px; font-size: 1.1rem; line-height: 1.5;
+    }
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; }
+    button {
+      border: 1px solid var(--border); background: var(--btn); color: var(--text);
+      padding: 10px 16px; border-radius: 12px; cursor: pointer; font-size: 1rem; transition: transform .05s ease, background .2s ease;
+    }
+    button:hover { background: var(--btn-hover); }
+    button:active { transform: translateY(1px); }
+    button[disabled] { opacity: .45; cursor: not-allowed; }
+    .badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); font-size: .9rem; }
+    .steps { display: grid; gap: 8px; margin-top: 14px; }
+    .step-item { display: flex; flex-direction: column; gap: 4px; font-size: .95rem; padding: 8px; border: 1px dashed var(--border); border-radius: 10px; }
+    .step-header { display: flex; align-items: center; gap: 10px; }
+    .dot { width: 10px; height: 10px; border-radius: 999px; background: #475569; border: 1px solid var(--border); }
+    .dot.ok { background: var(--accent); }
+    .dot.no { background: var(--danger); }
+    .explanation { font-size: .85rem; color: var(--muted); margin-left: 20px; }
+    .result { margin-top: 18px; padding: 14px; border: 1px dashed var(--border); border-radius: 12px; font-weight: 600; }
+    .result.ok { border-color: rgba(34,197,94,.5); color: #bbf7d0; }
+    .result.no { border-color: rgba(239,68,68,.5); color: #fecaca; }
+    .hint { margin-top: 10px; color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Verificador de Concurso de Agentes</h1>
+    <p>Responda com <strong>1</strong> (Sim) ou <strong>2</strong> (Não) para cada requisito. O questionário pára automaticamente ao primeiro "Não".</p>
+
+    <div class="badge" id="progressBadge">Pergunta <span id="step">1</span> de <span id="total">4</span></div>
+
+    <div class="question" id="questionText">Houve pluralidade de agentes?</div>
+
+    <div class="controls">
+      <button id="btn1" type="button">1 — Sim</button>
+      <button id="btn2" type="button">2 — Não</button>
+      <button id="restart" type="button" style="margin-left:auto">Reiniciar</button>
+    </div>
+
+    <div class="steps" id="stepsList"></div>
+
+    <div class="result" id="result" hidden></div>
+    <div class="hint">Dica: você também pode usar o teclado e pressionar 1 ou 2.</div>
+  </main>
+
+  <script>
+    (function() {
+      const requisitos = [
+        { id: 'pluralidade', texto: 'Houve pluralidade de agentes?', explicacao: 'Duas ou mais pessoas estão envolvidas no fato criminoso e cada agente realiza uma conduta própria, ainda que diferente, mas que contribui para o resultado criminoso.' },
+        { id: 'relevancia',  texto: 'Houve relevância causal de cada conduta?', explicacao: 'A conduta de cada participante deve ter importância para a ocorrência do resultado.' },
+        { id: 'liame',       texto: 'Houve liame subjetivo entre os agentes?', explicacao: 'É necessário que haja vínculo subjetivo entre os agentes, isto é, consciência e vontade de atuar em conjunto.' },
+        { id: 'identidade',  texto: 'Houve identidade de infração?', explicacao: 'Todos os agentes devem concorrer para o mesmo fato criminoso, ainda que com condutas distintas.' }
+      ];
+
+      const total = requisitos.length;
+      const elStep = document.getElementById('step');
+      const elTotal = document.getElementById('total');
+      const elQuestion = document.getElementById('questionText');
+      const elBtn1 = document.getElementById('btn1');
+      const elBtn2 = document.getElementById('btn2');
+      const elRestart = document.getElementById('restart');
+      const elResult = document.getElementById('result');
+      const elStepsList = document.getElementById('stepsList');
+
+      elTotal.textContent = String(total);
+
+      let current = 0;
+      let answers = {};
+      let finished = false;
+
+      function renderSteps() {
+        elStepsList.innerHTML = '';
+        requisitos.forEach((req, idx) => {
+          const row = document.createElement('div');
+          row.className = 'step-item';
+
+          const header = document.createElement('div');
+          header.className = 'step-header';
+
+          const dot = document.createElement('div');
+          dot.className = 'dot';
+
+          if (answers[req.id] === 1) dot.classList.add('ok');
+          if (answers[req.id] === 2) dot.classList.add('no');
+
+          const label = document.createElement('div');
+          label.textContent = `${idx + 1}. ${req.texto}`;
+
+          header.appendChild(dot);
+          header.appendChild(label);
+
+          const explanation = document.createElement('div');
+          explanation.className = 'explanation';
+          explanation.textContent = req.explicacao;
+
+          row.appendChild(header);
+          row.appendChild(explanation);
+          elStepsList.appendChild(row);
+        });
+      }
+
+      function setControlsEnabled(enabled) {
+        elBtn1.disabled = !enabled;
+        elBtn2.disabled = !enabled;
+      }
+
+      function showQuestion() {
+        if (current < total) {
+          elQuestion.textContent = requisitos[current].texto;
+          elStep.textContent = String(current + 1);
+          setControlsEnabled(true);
+          elResult.hidden = true;
+        }
+      }
+
+      function conclude(message, ok=false) {
+        finished = true;
+        setControlsEnabled(false);
+        elResult.textContent = message;
+        elResult.className = 'result ' + (ok ? 'ok' : 'no');
+        elResult.hidden = false;
+      }
+
+      function next() {
+        current++;
+        if (current >= total) {
+          conclude('houve concurso de agentes.', true);
+        } else {
+          showQuestion();
+        }
+      }
+
+      function answer(val) {
+        if (finished) return;
+        const req = requisitos[current];
+        answers[req.id] = val;
+        renderSteps();
+        if (val === 2) {
+          conclude('não houve concurso de agentes.', false);
+        } else {
+          next();
+        }
+      }
+
+      function restart() {
+        current = 0; answers = {}; finished = false; elResult.hidden = true;
+        renderSteps();
+        showQuestion();
+      }
+
+      elBtn1.addEventListener('click', () => answer(1));
+      elBtn2.addEventListener('click', () => answer(2));
+      elRestart.addEventListener('click', restart);
+      window.addEventListener('keydown', (e) => {
+        if (e.key === '1') answer(1);
+        if (e.key === '2') answer(2);
+      });
+
+      renderSteps();
+      showQuestion();
+    })();
+  </script>
+</body>
+</html>
