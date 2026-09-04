@@ -1,1 +1,314 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Termos de Finanças</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            max-width: 550px;
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            margin-top: 0;
+            color: #1a252f;
+            font-size: 1.6rem;
+        }
+        p.subtitle {
+            color: #6c757d;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        #question {
+            font-weight: 600;
+            font-size: 1.1rem;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #007bff;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        #result-container {
+            display: none;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+        #result-container.correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        #result-container.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        #result-text {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .timer-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+        }
+        .correct .timer-bar { background-color: #28a745; }
+        .incorrect .timer-bar { background-color: #dc3545; }
 
+        @keyframes shrinkTimer {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        #score {
+            font-size: 0.9rem;
+            color: #495057;
+            font-weight: bold;
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        #gameOver {
+            display: none;
+        }
+        #gameOver h2 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Termos sobre Finanças</h1>
+        
+        <div id="gameContent">
+            <p class="subtitle">Digite o termo referente à definição apresentada:</p>
+            
+            <div id="question"></div>
+
+            <div class="input-group">
+                <input type="text" id="answer" placeholder="Digite sua resposta aqui" onkeypress="handleKeyPress(event)">
+                <button id="btnVerify" onclick="checkAnswer()">Verificar</button>
+            </div>
+
+            <div id="result-container">
+                <div id="result-text"></div>
+                <div id="timerBar" class="timer-bar"></div>
+            </div>
+
+            <div id="score">Acertos: 0 | Erros: 0 | Questão: 1/15</div>
+        </div>
+
+        <div id="gameOver">
+            <h2>Fim do Jogo!</h2>
+            <p id="finalScore"></p>
+            <button onclick="restartGame()">Jogar Novamente</button>
+        </div>
+    </div>
+
+    <script>
+        // Banco de perguntas no próprio código
+        const terms = {
+            "CRI significa": "certificado de recebíveis imobiliários",
+            "CRI é um título de renda ______ emitido por uma ______ ": "fixa, securitizadora",
+            "No CRI, a securitizadora transforma os futuros recebíveis em ______": "títulos",
+            "O que a securitizadora faz?": "pega o direito de receber da empresa, transforma isso em papel e vende no mercado",
+            "Empresa que compra direitos creditórios (dívidas ou valores a receber de terceiros) e os transforma em títulos negociáveis no mercado de capitais": "securitizadora",
+            "Companhia especializada em converter direitos creditórios em títulos negociáveis no mercado de capitais. ": "securitizadora",
+            "Se a empresa para de pagar os valores devidos ao CRI, a operação entra em ______. Nesse momento, pode ocorrer a ______ ______": "inadimplência, execução das garantias",
+            "No mercado financeiro, as operações ______ ______ [TERMO EM INGLÊS], oferecem taxas mais altas justamente por financiarem empresas ou projetos mais ______": "high yield, arriscados",
+            "FII significa": "fundo de investimento imobiliário",
+            "Principais tipos de FII são: o Fundos de ______ (investem em imóveis físicos), fundos de ______ (investem em títulos imobiliários) e fundos ______ (misturam imóveis físicos e títulos imobiliários)": "tijolo, papel, hibridos",
+            "LCI significa": "letra de crédito imobiliário",
+            "LCA significa": "letra de crédito do agronegócio",
+            "Título público emitido pelo Governo Federal para financiar suas atividades": "tesouro direto",
+            "Indicador oficial da inflação no Brasil": "ipca",
+            "Taxa básica de juros da economia brasileira": "selic",
+            "CDB significa": "certificado de depósito bancário",
+            "Investimento com maior risco e potencial de rentabilidade variável": "ações",
+            "Processo de perda do poder de compra do dinheiro ao longo do tempo": "inflação",
+            "LCI significa": "letra de crédito imobiliário",
+            "LCA significa": "letra de crédito do agronegócio",
+            "Título público emitido pelo Governo Federal para financiar suas atividades": "tesouro direto",
+            "Indicador oficial da inflação no Brasil": "ipca",
+            "Taxa básica de juros da economia brasileira": "selic",
+            "CDB significa": "certificado de depósito bancário",
+            "Investimento com maior risco e potencial de rentabilidade variável": "ações",
+            "Processo de perda do poder de compra do dinheiro ao longo do tempo": "inflação"
+        };
+
+        const TOTAL_QUESTIONS = 15;
+        let currentTerm;
+        let correctAnswers = 0;
+        let wrongAnswers = 0;
+        let questionCount = 0;
+        let usedTerms = [];
+        let timerTimeout;
+
+        function newQuestion() {
+            if (questionCount >= TOTAL_QUESTIONS) {
+                endGame();
+                return;
+            }
+
+            const availableTerms = Object.keys(terms).filter(term => !usedTerms.includes(term));
+            
+            if (availableTerms.length === 0) {
+                endGame();
+                return;
+            }
+
+            // Seleciona um termo aleatório do banco
+            currentTerm = availableTerms[Math.floor(Math.random() * availableTerms.length)];
+            usedTerms.push(currentTerm);
+            
+            document.getElementById('question').textContent = currentTerm;
+            document.getElementById('answer').value = '';
+            document.getElementById('answer').disabled = false;
+            document.getElementById('btnVerify').disabled = false;
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('answer').focus();
+            
+            questionCount++;
+            updateScore();
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = terms[currentTerm].toLowerCase();
+
+            const resultContainer = document.getElementById('result-container');
+            const resultText = document.getElementById('result-text');
+            const timerBar = document.getElementById('timerBar');
+
+            document.getElementById('answer').disabled = true;
+            document.getElementById('btnVerify').disabled = true;
+
+            let displayTime;
+
+            if (userAnswer === correctAnswer) {
+                resultText.textContent = 'Correto! Parabéns!';
+                resultContainer.className = 'correct';
+                correctAnswers++;
+                displayTime = 5000; // 5 segundos para acerto
+            } else {
+                resultText.textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
+                resultContainer.className = 'incorrect';
+                wrongAnswers++;
+                displayTime = 10000; // 10 segundos para erro
+            }
+
+            resultContainer.style.display = 'block';
+
+            // Ajusta a animação da barra de tempo dinamicamente (5s ou 10s)
+            timerBar.style.animation = 'none';
+            timerBar.offsetHeight; 
+            timerBar.style.animation = `shrinkTimer ${displayTime}ms linear forwards`;
+
+            updateScore();
+
+            clearTimeout(timerTimeout);
+            timerTimeout = setTimeout(newQuestion, displayTime);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !document.getElementById('btnVerify').disabled) {
+                checkAnswer();
+            }
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = `Acertos: ${correctAnswers} | Erros: ${wrongAnswers} | Questão: ${questionCount}/${TOTAL_QUESTIONS}`;
+        }
+
+        function endGame() {
+            document.getElementById('gameContent').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'block';
+            document.getElementById('finalScore').innerHTML = `
+                <strong>Resumo do Desempenho:</strong><br><br>
+                Acertos: <span style="color: green;">${correctAnswers}</span><br>
+                Erros: <span style="color: red;">${wrongAnswers}</span>
+            `;
+        }
+
+        function restartGame() {
+            correctAnswers = 0;
+            wrongAnswers = 0;
+            questionCount = 0;
+            usedTerms = [];
+            
+            document.getElementById('gameContent').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+            
+            newQuestion();
+        }
+
+        // Inicia o jogo
+        newQuestion();
+    </script>
+</body>
+</html>
