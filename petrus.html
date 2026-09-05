@@ -141,7 +141,6 @@
     </style>
 </head>
 <body>
-
     <div class="container">
         <h1>Termos sobre Finanças</h1>
         
@@ -171,7 +170,6 @@
     </div>
 
     <script>
-        // Banco de perguntas no próprio código
         const terms = {
             "CRI significa": "certificado de recebíveis imobiliários",
             "CRI é um título de renda ______ emitido por uma ______ ": "fixa, securitizadora",
@@ -183,22 +181,23 @@
             "No mercado financeiro, as operações ______ ______ [TERMO EM INGLÊS], oferecem taxas mais altas justamente por financiarem empresas ou projetos mais ______": "high yield, arriscados",
             "FII significa": "fundo de investimento imobiliário",
             "Principais tipos de FII são: o Fundos de ______ (investem em imóveis físicos), fundos de ______ (investem em títulos imobiliários) e fundos ______ (misturam imóveis físicos e títulos imobiliários)": "tijolo, papel, hibridos",
-            "LCI significa": "letra de crédito imobiliário",
-            "LCA significa": "letra de crédito do agronegócio",
             "Título público emitido pelo Governo Federal para financiar suas atividades": "tesouro direto",
             "Indicador oficial da inflação no Brasil": "ipca",
             "Taxa básica de juros da economia brasileira": "selic",
             "CDB significa": "certificado de depósito bancário",
             "Investimento com maior risco e potencial de rentabilidade variável": "ações",
             "Processo de perda do poder de compra do dinheiro ao longo do tempo": "inflação",
-            "LCI significa": "letra de crédito imobiliário",
-            "LCA significa": "letra de crédito do agronegócio",
-            "Título público emitido pelo Governo Federal para financiar suas atividades": "tesouro direto",
-            "Indicador oficial da inflação no Brasil": "ipca",
-            "Taxa básica de juros da economia brasileira": "selic",
-            "CDB significa": "certificado de depósito bancário",
-            "Investimento com maior risco e potencial de rentabilidade variável": "ações",
-            "Processo de perda do poder de compra do dinheiro ao longo do tempo": "inflação"
+	    "A principal entidade de representação e autorregulação do mercado financeiro brasileiro": "ANBIMA",
+	    "B3 significa": "Brasil, Bolsa, Balcão",
+	    "A principal bolsa de valores do Brasil é a ______, está localizada na cidade de ______ ______": "B3, São Paulo",
+	    "A principal bolsa de valores dos Estados Unidos é a ______, localizada na rua ______ ______, na cidade de ______ ______.": "NYSE, Wall Street, Nova York",
+	    "A segunda bolsa de valores dos Estados Unidos é a ______, mundialmente famosa por concentrar as ______ ______ [TERMO EM INGLÊS]": "NASDAQ, Big Techs",
+	    "IP Finance": "Uso de direitos de propriedade intelectual como garantia para captar recursos financeiros",
+	    "Diversos investidores aportam pequenas quantias por meio de plataformas autorizadas pela CVM, recebendo participação ou títulos conversíveis.": "Crowdfunding",
+	    "Grandes empresas que investem em startups por meio de veículos próprios de investimento": "Corporate Venture Capital",
+	    "Investidor que não é considerado sócio nem tem qualquer direito a gerência ou a voto na administração da empresa, não responde por qualquer obrigação da empresa e é remunerado por seus aportes": "Investidor Anjo",
+	    "______ são organizações ______ ou societárias, ______ ou em operação recente, cuja atuação caracteriza-se pela ______ aplicada a ______ ______ ou a produtos ou serviços": "startups, empresariais, nascentes, inovação, modelo de negócios"
+	
         };
 
         const TOTAL_QUESTIONS = 15;
@@ -222,7 +221,6 @@
                 return;
             }
 
-            // Seleciona um termo aleatório do banco
             currentTerm = availableTerms[Math.floor(Math.random() * availableTerms.length)];
             usedTerms.push(currentTerm);
             
@@ -254,17 +252,16 @@
                 resultText.textContent = 'Correto! Parabéns!';
                 resultContainer.className = 'correct';
                 correctAnswers++;
-                displayTime = 5000; // 5 segundos para acerto
+                displayTime = 5000;
             } else {
                 resultText.textContent = `Incorreto. A resposta correta é: ${terms[currentTerm]}`;
                 resultContainer.className = 'incorrect';
                 wrongAnswers++;
-                displayTime = 10000; // 10 segundos para erro
+                displayTime = 10000;
             }
 
             resultContainer.style.display = 'block';
 
-            // Ajusta a animação da barra de tempo dinamicamente (5s ou 10s)
             timerBar.style.animation = 'none';
             timerBar.offsetHeight; 
             timerBar.style.animation = `shrinkTimer ${displayTime}ms linear forwards`;
@@ -288,10 +285,14 @@
         function endGame() {
             document.getElementById('gameContent').style.display = 'none';
             document.getElementById('gameOver').style.display = 'block';
+            
+            const percentage = ((correctAnswers / TOTAL_QUESTIONS) * 100).toFixed(1);
+
             document.getElementById('finalScore').innerHTML = `
                 <strong>Resumo do Desempenho:</strong><br><br>
-                Acertos: <span style="color: green;">${correctAnswers}</span><br>
-                Erros: <span style="color: red;">${wrongAnswers}</span>
+                Acertos: <span style="color: green;">${correctAnswers}/${TOTAL_QUESTIONS}</span><br>
+                Erros: <span style="color: red;">${wrongAnswers}</span><br>
+                Aproveitamento: <strong>${percentage}%</strong>
             `;
         }
 
@@ -307,7 +308,6 @@
             newQuestion();
         }
 
-        // Inicia o jogo
         newQuestion();
     </script>
 </body>
