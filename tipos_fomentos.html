@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — Mapa de Fomento à Inovação e ESG</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #eef7fb, #f8f4fb);
+    color: #243447;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 28px 16px;
+  }
+  .container { width: min(850px, 100%); }
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  h1 { margin: 0 0 8px; font-size: 28px; color: #214b6b; }
+  .subtitle { margin: 0; color: #64748b; font-size: 15px; }
+  .card {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 10px 35px rgba(31, 60, 85, .12);
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 14px;
+    color: #64748b;
+  }
+  .progress {
+    height: 9px;
+    background: #e7edf2;
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #36a9d6, #b85d9b);
+    transition: width .3s;
+  }
+  .question-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #7a8793;
+    margin-bottom: 12px;
+  }
+  .item {
+    font-size: clamp(25px, 5vw, 38px);
+    font-weight: 700;
+    text-align: center;
+    color: #1f4968;
+    padding: 25px 10px 32px;
+    min-height: 105px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .instruction {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 18px;
+  }
+  .choices {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  button {
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+  }
+  .choice {
+    min-height: 80px;
+    padding: 15px;
+    border-radius: 14px;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    transition: transform .15s, filter .15s;
+  }
+  .choice:hover:not(:disabled) {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+  .direct { background: #159bd0; }
+  .indirect { background: #7162a5; }
+  .other { background: #b04d91; }
+  .choice:disabled { cursor: default; opacity: .9; }
+  .feedback {
+    display: none;
+    margin-top: 20px;
+    padding: 16px 18px;
+    border-radius: 13px;
+    font-weight: 600;
+    line-height: 1.45;
+  }
+  .feedback.correct {
+    display: block;
+    background: #e9f8ef;
+    color: #17633a;
+    border: 1px solid #b8e5c9;
+  }
+  .feedback.wrong {
+    display: block;
+    background: #fff0f0;
+    color: #8a3030;
+    border: 1px solid #f0c0c0;
+  }
+  .next {
+    display: none;
+    width: 100%;
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #244f70;
+    color: white;
+    font-weight: 700;
+  }
+  .next:hover { background: #193b55; }
+  .result {
+    display: none;
+    text-align: center;
+  }
+  .result h2 { color: #214b6b; font-size: 30px; }
+  .score {
+    font-size: 50px;
+    font-weight: 800;
+    color: #b04d91;
+    margin: 12px 0;
+  }
+  .result p { color: #64748b; line-height: 1.5; }
+  .restart {
+    margin-top: 15px;
+    padding: 14px 28px;
+    border-radius: 12px;
+    background: #159bd0;
+    color: white;
+    font-weight: 700;
+  }
+  .legend {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #64748b;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block; margin-right: 5px;
+  }
+  @media (max-width: 650px) {
+    .choices { grid-template-columns: 1fr; }
+    .card { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Quiz — Mapa de Fomento à Inovação e ESG</h1>
+    <p class="subtitle">Identifique a categoria de apoio correspondente a cada instrumento.</p>
+  </div>
+
+  <div class="card">
+    <div id="identification">
+      <div class="question-label">Identificação do participante</div>
+      <div class="item" style="font-size:28px; min-height:80px;">
+        Antes de começar, informe seu nome
+      </div>
+      <div style="max-width:520px; margin:0 auto;">
+        <input id="participantName" type="text" placeholder="Digite seu nome"
+          autocomplete="name"
+          style="width:100%; padding:15px 16px; border:2px solid #d8e2e9; border-radius:12px;
+                 font-size:17px; outline:none;">
+        <button id="startQuiz" class="next" style="display:block; margin-top:14px;">
+          Iniciar Quiz →
+        </button>
+        <div id="nameError" style="display:none; color:#a33; text-align:center; margin-top:10px;">
+          Digite seu nome para iniciar.
+        </div>
+      </div>
+    </div>
+
+    <div id="quiz" style="display:none;">
+      <div class="topbar">
+        <span id="counter">Questão 1 de 26</span>
+        <strong id="scoreText">Acertos: 0</strong>
+      </div>
+      <div class="progress"><div class="progress-fill" id="progress"></div></div>
+
+      <div class="question-label">Em qual tipo de apoio ele se enquadra?</div>
+      <div class="item" id="item">Recurso Reembolsável</div>
+      <div class="instruction">Clique em uma das três categorias:</div>
+
+      <div class="choices">
+        <button class="choice direct" data-answer="direct">Apoio Financeiro Direto</button>
+        <button class="choice indirect" data-answer="indirect">Apoio Financeiro Indireto</button>
+        <button class="choice other" data-answer="other">Outras Formas de Apoio</button>
+      </div>
+
+      <div id="feedback" class="feedback"></div>
+      <button id="next" class="next">Próximo →</button>
+
+      <div class="legend">
+        <span><i class="dot direct"></i>Recursos financeiros</span>
+        <span><i class="dot indirect"></i>Incentivos/créditos fiscais</span>
+        <span><i class="dot other"></i>Outras formas de apoio</span>
+      </div>
+    </div>
+
+    <div id="result" class="result">
+      <h2 id="resultGreeting">Quiz concluído!</h2>
+      <div class="score" id="finalScore">0/26</div>
+      <p id="finalMessage"></p>
+      <button class="restart" onclick="restartQuiz()">Fazer novamente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  // Apoio Financeiro Direto
+  { item: "Subvenção Econômica", answer: "direct" },
+  { item: "Recursos Não Reembolsáveis", answer: "direct" },
+  { item: "Recursos Reembolsáveis", answer: "direct" },
+  { item: "Investimento Obrigatório — ANP", answer: "direct" },
+  { item: "Investimento Obrigatório — ANEEL", answer: "direct" },
+  { item: "Títulos de Dívida", answer: "direct" },
+  { item: "Investimento Anjo", answer: "direct" },
+  { item: "Seed Money", answer: "direct" },
+  { item: "Venture Capital", answer: "direct" },
+  { item: "Corporate Venture Capital", answer: "direct" },
+  { item: "Equity Crowdfunding", answer: "direct" },
+  { item: "Private Equity", answer: "direct" },
+
+  // Apoio Financeiro Indireto
+  { item: "Lei do Bem", answer: "indirect" },
+  { item: "PIS/COFINS", answer: "indirect" },
+  { item: "Programa MOVER", answer: "indirect" },
+  { item: "Lei de Informática", answer: "indirect" },
+  { item: "PADIS", answer: "indirect" },
+  { item: "Lei da Reciclagem", answer: "indirect" },
+
+  // Outras Formas de Apoio
+  { item: "Recursos Humanos", answer: "other" },
+  { item: "Encomenda Tecnológica", answer: "other" },
+  { item: "Contrato Público para Solução Inovadora", answer: "other" },
+  { item: "Bônus Tecnológico", answer: "other" },
+  { item: "Rede de Interação/Cooperação", answer: "other" },
+  { item: "Infraestrutura", answer: "other" },
+  { item: "Fundos Patrimoniais (Endowments)", answer: "other" }
+];
+
+let current = 0;
+let score = 0;
+let answered = false;
+let participantName = "";
+
+const labels = {
+  direct: "Apoio Financeiro Direto",
+  indirect: "Apoio Financeiro Indireto",
+  other: "Outras Formas de Apoio"
+};
+
+function startQuiz() {
+  const input = document.getElementById("participantName");
+  const error = document.getElementById("nameError");
+  const name = input.value.trim();
+
+  if (!name) {
+    error.style.display = "block";
+    input.focus();
+    return;
+  }
+
+  participantName = name;
+  error.style.display = "none";
+  document.getElementById("identification").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  current = 0;
+  score = 0;
+  loadQuestion();
+}
+
+document.getElementById("startQuiz").addEventListener("click", startQuiz);
+
+document.getElementById("participantName").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") startQuiz();
+});
+
+function loadQuestion() {
+  answered = false;
+  const q = questions[current];
+
+  document.getElementById("counter").textContent =
+    `Questão ${current + 1} de ${questions.length}`;
+  document.getElementById("scoreText").textContent = `Acertos: ${score}`;
+  document.getElementById("progress").style.width =
+    `${(current / questions.length) * 100}%`;
+  document.getElementById("item").textContent = q.item;
+
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback";
+  feedback.textContent = "";
+
+  document.getElementById("next").style.display = "none";
+
+  document.querySelectorAll(".choice").forEach(btn => {
+    btn.disabled = false;
+    btn.style.outline = "none";
+    btn.style.opacity = "1";
+  });
+}
+
+document.querySelectorAll(".choice").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (answered) return;
+    answered = true;
+
+    const selected = btn.dataset.answer;
+    const correct = questions[current].answer;
+    const feedback = document.getElementById("feedback");
+
+    document.querySelectorAll(".choice").forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+      score++;
+      btn.style.outline = "4px solid #28a745";
+      feedback.className = "feedback correct";
+      feedback.textContent = `✓ Correto! ${questions[current].item} pertence a "${labels[correct]}".`;
+    } else {
+      btn.style.outline = "4px solid #dc3545";
+      const correctBtn = document.querySelector(`[data-answer="${correct}"]`);
+      correctBtn.style.outline = "4px solid #28a745";
+      feedback.className = "feedback wrong";
+      feedback.textContent = `✗ Não é essa. ${questions[current].item} pertence a "${labels[correct]}".`;
+    }
+
+    document.getElementById("scoreText").textContent = `Acertos: ${score}`;
+    document.getElementById("progress").style.width =
+      `${((current + 1) / questions.length) * 100}%`;
+
+    const next = document.getElementById("next");
+    next.style.display = "block";
+    next.textContent = current === questions.length - 1 ? "Ver resultado" : "Próximo →";
+  });
+});
+
+document.getElementById("next").addEventListener("click", () => {
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    loadQuestion();
+  }
+});
+
+function showResult() {
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("result").style.display = "block";
+
+  document.getElementById("resultGreeting").textContent =
+    `${participantName}, você concluiu o quiz!`;
+
+  document.getElementById("finalScore").textContent =
+    `${score}/${questions.length}`;
+
+  const percentage = Math.round(score / questions.length * 100);
+
+  // Frase principal personalizada conforme o número de acertos.
+  document.getElementById("finalMessage").innerHTML =
+    `<strong>${participantName}, você acertou ${score} ${score === 1 ? "questão" : "questões"}.</strong>
+     <br>Aproveitamento: ${percentage}%.`;
+
+  const detail = document.createElement("p");
+  detail.style.marginTop = "8px";
+  detail.textContent =
+    percentage === 100 ? "Você acertou todas as questões!" :
+    percentage >= 80 ? "Excelente resultado! Revise apenas os itens que geraram dúvida." :
+    percentage >= 60 ? "Bom resultado. Uma revisão dos instrumentos pode ajudar a melhorar a pontuação." :
+    "Recomenda-se revisar o mapa de fomento e fazer o quiz novamente.";
+  document.getElementById("finalMessage").appendChild(detail);
+}
+
+function restartQuiz() {
+  current = 0;
+  score = 0;
+  document.getElementById("result").style.display = "none";
+  document.getElementById("identification").style.display = "block";
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("participantName").value = participantName;
+  document.getElementById("nameError").style.display = "none";
+}
+
+// Embaralha as questões a cada início para evitar decorar a ordem.
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+shuffle(questions);
+loadQuestion();
+</script>
+</body>
+</html>
