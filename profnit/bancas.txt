@@ -35,7 +35,7 @@ MEMBRO 3 - Profissional do mercado no setor impactado pelo TCC
 10. E-mail Secundário:
 
 ------------------
-DADOS DO BANCA
+DADOS DA BANCA
 ------------------
 Data/Horário da Banca:
 
