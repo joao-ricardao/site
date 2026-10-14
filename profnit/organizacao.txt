@@ -1,0 +1,26 @@
+PROFNIT - Organização
+
+Conselho Gestor (CG)
+Coordenação Acadêmica Nacional (CAN)
+Comissão Acadêmica Institucional (CAI)
+
+Comissão de Acompanhamento Acadêmico (CAA)
+. Comitê Técnico A (CTA-CAA)
+. Comitê Técnico B (CTB-CAA)
+. Comitê Técnico C (CTC-CAA)
+. Comitê Técnico D (CTD-CAA)
+. Comitê Técnico E (CTE-CAA)
+
+Comitê Técnico
+CTA-CAA: Base de dados de Propriedade Intelectual, e/ou Transferência de Tecnologia para Inovação Tecnológica;
+CTA-CAA: Criação de empresa/organização inovadora;
+CTA-CAA: Melhoria do gerenciamento ou processo ou serviço de empresa/organização inovadora;
+CTA-CAA: Norma ou Marco Regulatório de Propriedade Intelectual e/ou Transferência de Tecnologia para inovação Tecnológica;
+CTB-CAA: Software ou Aplicativo de Propriedade Intelectual e/ou Transferência de Tecnologia para Inovação Tecnológica;
+CTB-CAA: Patente de invenção ou modelo de utilidade;
+CTC-CAA: Cursos de formação profissional ministrados para fora do PROFNIT sobre Propriedade Intelectual, e/ou Transferência de Tecnologia para Inovação Tecnológica;
+CTC-CAA: Material didático dirigido a um público específico e sobre Propriedade Intelectual, e/ou Transferência de Tecnologia para Inovação Tecnológica;
+CTD-CAA: Relatório Técnico Conclusivo (RTC) sobre Propriedade Intelectual e/ou Transferência de Tecnologia para Inovação Tecnológica;
+CTD-CAA: Tecnologia social: Desenvolvida conjuntamente com a comunidade;
+CTD-CAA: Tecnologia social: Aplicada na interação com a comunidade.
+CTE-CAA: Pós-doutorado
