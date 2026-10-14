@@ -1,0 +1,14 @@
+Atue como professor especialista. Com base estritamente nas fontes selecionadas neste caderno do NotebookLM, crie um material de estudo completo contendo as seguintes 12 seções:
+
+1. TÍTULO: Curto e representativo das fontes.
+2. IDEIA CENTRAL: Resumo de até 3 frases.
+3. ESTRUTURA HIERÁRQUICA: Tópicos e subtópicos organizados logicamente.
+4. EXPLICAÇÃO DIDÁTICA: Explicação didática dos principais conceitos como se fosse um professor explicando para um aluno.
+5. CONCEITOS-CHAVE: Termos fundamentais e definições curtas.
+6. RELAÇÃO ENTRE OS CONCEITOS: Mapa conceitual textual (ex: A → B → C).
+7. PERGUNTAS DE COMPREENSÃO: 5 perguntas fundamentadas nas fontes com respostas imediatas.
+8. PERGUNTAS DE REFLEXÃO CRÍTICA: 5 perguntas analíticas com respostas fundamentadas.
+9. FLASHCARDS PARA MEMORIZAÇÃO: 10 a 20 pares no formato: "Quem descobriu o Brasil": "Pedro Alvares Cabral", retire as nota de citação das suas fontes.
+10. APLICAÇÕES PRÁTICAS: Cenários ou problemas práticos presentes nas fontes.
+11. ANÁLISE ARGUMENTATIVA: Tese, argumentos, evidências, pressupostos, limitações e conclusão identificados nas fontes.
+12. REVISÃO FINAL: Síntese de 5 a 10 pontos essenciais para memorização.
